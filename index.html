@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>名前入力フォーム</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h3>お名前を入力してください</h3>
+
+  <input id="name" type="text" placeholder="フルネーム" style="width: 90%; padding: 8px;">
+  <br><br>
+
+  <button onclick="submitName()" style="padding: 10px 20px;">送信</button>
+
+  <script>
+    async function main() {
+      await liff.init({ liffId: "2009098638-ljFbKlWv" });
+
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      }
+    }
+
+    async function submitName() {
+      const name = document.getElementById("name").value;
+      if (!name) {
+        alert("名前を入力してください");
+        return;
+      }
+
+      const profile = await liff.getProfile();
+      const userId = profile.userId;
+
+      await fetch("https://line-webhook-fragrant-glade-1897.fly.dev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, name })
+      });
+
+      alert("送信しました！");
+      liff.closeWindow();
+    }
+
+    main();
+  </script>
+</body>
+</html>
